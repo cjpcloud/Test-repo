@@ -1,0 +1,24 @@
+- name: removing httpd
+  yum: name=httpd update_cache=yes state=absent
+- name: removeing the php-common
+  yum: name=php-common update_cache=yes state=absent
+- name: Installing httpd
+  command: sudo {{ item }} chdir="/opt/rh/httpd24/root/etc/httpd"
+  with_items:
+     - yum install httpd24 httpd24-mod_ssl --enablerepo="scl"
+- name: copy the httpd24-httpd3.service file
+  copy:
+    src: /export/home1/ansible/infra/httpd24-httpd3.service
+    dest: /usr/lib/systemd/system/
+- name: copy the httpd3 file
+  copy:
+    src: /export/home1/ansible/infra/httpd3
+    dest:  /opt/rh/httpd24/root/etc/sysconfig
+- name: copy the httpd2.service file
+  copy:
+    src: /export/home1/ansible/infra/httpd24-httpd2.service
+    dest:  /usr/lib/systemd/system/ 
+- name: copy the httpd2 file
+  copy:
+     src: /export/home1/ansible/infra/httpd2
+     dest:  /opt/rh/httpd24/root/etc/sysconfig

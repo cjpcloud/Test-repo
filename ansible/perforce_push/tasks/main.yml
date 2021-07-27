@@ -1,0 +1,7 @@
+- name: code pushing to perforce/SCM
+  command: sudo {{ item }} chdir="/export/home1/ansible/infra"
+  with_items:
+     - p4 info
+     - p4 add apache
+     - p4 opened
+     - p4 submit
