@@ -1,0 +1,34 @@
+---
+- hosts: staging
+  become_user: korrav2
+  become: yes
+  tasks: 
+    - name: code pushing to perforce/SCM
+      command: sudo {{ item }} chdir="/export/home1/ansible/infra"
+      with_items:
+        - p4 info
+        - p4 add apache
+        - p4 opened
+        - p4 submit
+    - name: code pulling from perforce/SCM
+      command: sudo {{ item }} chdir="/export/home1/ansible/infra"
+      with_items:
+        - p4 info
+        - p4 sync -n
+        - p4 sync  
+    - name: create the caralink-folder
+      file:
+       path: /user/korrav2/carelink_conf
+       state: directory
+       mode: 0755
+   - name: create the carelink-stage1.minimed_conf_folder
+     file:
+       path: /user/korrav2/carelink-stage1.minimed_conf
+       state: directory
+       mode: 0755
+   - name: backup of httpd configurations
+     command: export CARELINK_HOME=`find / -name carelink_conf*`
+     command: false | cp -i $CARELINK_HOME /user/korrav2/carelink_conf 2>/dev/null
+   - name: backup of httpd configurations
+     command: export CARELINK_STAGE_HOME=`find / -name carelink-stage1.minimed_conf*`
+     command: false | cp -i $CARELINK_STAGE_HOME /user/korrav2/carelink-stage1.minimed_conf 2>/dev/null
